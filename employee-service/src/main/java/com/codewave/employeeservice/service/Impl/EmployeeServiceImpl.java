@@ -9,14 +9,11 @@ import com.codewave.employeeservice.repository.EmployeeRepository;
 import com.codewave.employeeservice.service.APIClient;
 import com.codewave.employeeservice.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -30,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private WebClient webClient;
 
     private APIClient apiClient;
+    private OrganizationApiClient organizationApiClient;
 
     @Override
     public EmployeeDto addEmployee(EmployeeDto employeeDto) {
@@ -60,7 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Get department details for the employee using apiclient(Feign client)
         DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.getDepartmentCode());
         OrganizationDto organizationDto =webClient.get()
-                .uri("http://localhost:8083/api/organizations/"+employee.getOrganizationCode())
+                .uri("http://localhost:8083/api/organizations/"+employee.getOrganizationCode().trim())
                 .retrieve()
                 .bodyToMono(OrganizationDto.class)
                 .block();
@@ -70,7 +68,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         apiResponseDto.setEmployeeDto(mapToDto(employee));
         apiResponseDto.setDepartmentDto(departmentDto);
         apiResponseDto.setOrganizationDto(organizationDto);
-
         return apiResponseDto;
     }
 
