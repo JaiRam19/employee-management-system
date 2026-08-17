@@ -1,11 +1,14 @@
 package com.codewave.departmentservice.controller;
 
 import com.codewave.departmentservice.dto.DepartmentDto;
+import com.codewave.departmentservice.dto.StaffCount;
 import com.codewave.departmentservice.service.DepartmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -25,5 +28,23 @@ public class DepartmentController {
     @GetMapping("{department-code}")
     public ResponseEntity<DepartmentDto> getDepartmentByCode(@PathVariable("department-code") String departmentCode){
         return ResponseEntity.ok(departmentService.getDepartmentByCode(departmentCode));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<DepartmentDto>> getAllDepartments() {
+        List<DepartmentDto> departments = departmentService.getAllDepartments();
+        return ResponseEntity.ok(departments);
+    }
+
+    @GetMapping("/over-staffed")
+    public ResponseEntity<List<StaffCount>> getOverStaffedDepartments() {
+        List<StaffCount> overStaffedDepartments = departmentService.getOverStaffedDepartments();
+        return ResponseEntity.ok(overStaffedDepartments);
+    }
+
+    @GetMapping("/under-staffed")
+    public ResponseEntity<List<StaffCount>> getUnderStaffedDepartments() {
+        List<StaffCount> underStaffedDepartments = departmentService.getUnderStaffedDepartments();
+        return ResponseEntity.ok(underStaffedDepartments);
     }
 }

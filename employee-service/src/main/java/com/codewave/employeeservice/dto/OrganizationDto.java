@@ -18,5 +18,7 @@ public class OrganizationDto {
     private String organizationCode;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime createdDate;
-//    private String createdDate;
+    private String industryType;
+    private String headquartersLocation;
+    private Integer employeeCount;
 }

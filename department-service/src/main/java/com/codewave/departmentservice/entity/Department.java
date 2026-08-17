@@ -19,4 +19,7 @@ public class Department {
     private String departmentName;
     private String departmentDescription;
     private String departmentCode;
+    private Long departmentHeadId;
+    private Integer capacity;
+    private String location;
 }

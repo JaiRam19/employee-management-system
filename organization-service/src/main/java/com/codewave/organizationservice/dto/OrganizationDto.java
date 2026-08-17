@@ -16,4 +16,7 @@ public class OrganizationDto {
     private String organizationDescription;
     private String organizationCode;
     private LocalDateTime createdDate;
+    private String industryType;
+    private String headquartersLocation;
+    private Integer employeeCount;
 }

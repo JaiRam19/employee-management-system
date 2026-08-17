@@ -29,4 +29,10 @@ public class Organization {
 
     @CreationTimestamp
     private LocalDateTime createdDate;
+
+    private String industryType;
+
+    private String headquartersLocation;
+
+    private Integer employeeCount;
 }

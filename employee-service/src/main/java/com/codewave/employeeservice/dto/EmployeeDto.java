@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,4 +19,11 @@ public class EmployeeDto {
     private String email;
     private String departmentCode;
     private String organizationCode;
+    private String skills;
+    private String designation;
+    private LocalDate joiningDate;
+    private String employmentStatus;
+    private BigDecimal experienceYears;
+    private Long managerId;
+    private String employmentType;
 }

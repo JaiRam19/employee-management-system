@@ -1,13 +1,18 @@
 package com.codewave.employeeservice.controller;
 
 import com.codewave.employeeservice.dto.APIResponseDto;
+import com.codewave.employeeservice.dto.EmployeeCandidateDto;
 import com.codewave.employeeservice.dto.EmployeeDto;
+import com.codewave.employeeservice.dto.EmployeeFilterCriteria;
 import com.codewave.employeeservice.service.AIService;
 import com.codewave.employeeservice.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -32,5 +37,17 @@ public class EmployeeController {
     public ResponseEntity<String> generateSummary(@PathVariable("employee-id") Long employeeId) {
         String summary = aiService.generateSummary(employeeId);
         return ResponseEntity.ok(summary);
+    }
+
+    @PostMapping("/count-by-department")
+    public ResponseEntity<Map<String, Long>> getEmployeeCountByDepartment(@RequestBody List<String> departmentCodes) {
+        Map<String, Long> employeeCountMap = employeeService.getEmployeeCountByDepartment(departmentCodes);
+        return ResponseEntity.ok(employeeCountMap);
+    }
+
+    @PostMapping("/employees/candidates")
+    public ResponseEntity<List<EmployeeCandidateDto>> getMovementCandidates(@RequestBody EmployeeFilterCriteria criteria){
+        List<EmployeeCandidateDto> movementCandidates = employeeService.getMovementCandidates(criteria);
+        return ResponseEntity.ok(movementCandidates);
     }
 }

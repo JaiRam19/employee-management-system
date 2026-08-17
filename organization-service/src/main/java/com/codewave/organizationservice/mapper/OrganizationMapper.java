@@ -12,6 +12,9 @@ public class OrganizationMapper {
         organization.setOrganizationDescription(organizationDto.getOrganizationDescription());
         organization.setOrganizationCode(organizationDto.getOrganizationCode());
         organization.setCreatedDate(organizationDto.getCreatedDate());
+        organization.setIndustryType(organizationDto.getIndustryType());
+        organization.setHeadquartersLocation(organizationDto.getHeadquartersLocation());
+        organization.setEmployeeCount(organizationDto.getEmployeeCount());
         return organization;
     }
 
@@ -22,6 +25,9 @@ public class OrganizationMapper {
         organizationDto.setOrganizationDescription(organization.getOrganizationDescription());
         organizationDto.setOrganizationCode(organization.getOrganizationCode());
         organizationDto.setCreatedDate(organization.getCreatedDate());
+        organizationDto.setIndustryType(organization.getIndustryType());
+        organizationDto.setHeadquartersLocation(organization.getHeadquartersLocation());
+        organizationDto.setEmployeeCount(organization.getEmployeeCount());
         return organizationDto;
     }
 
