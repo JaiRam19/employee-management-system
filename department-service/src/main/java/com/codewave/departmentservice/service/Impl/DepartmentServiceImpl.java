@@ -1,12 +1,11 @@
 package com.codewave.departmentservice.service.Impl;
 
-import com.codewave.departmentservice.dto.DepartmentDto;
-import com.codewave.departmentservice.dto.StaffCount;
+import com.codewave.departmentservice.dto.*;
 import com.codewave.departmentservice.entity.Department;
 import com.codewave.departmentservice.repository.DepartmentRepository;
 import com.codewave.departmentservice.service.DepartmentService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,8 @@ import org.springframework.web.client.RestClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
@@ -88,6 +87,61 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<StaffCount> getUnderStaffedDepartments() {
         return getOverUnderStaffedDepts(false);
+    }
+
+    @Override
+    public AiStaffingResponseDto getAiStaffRecommendations(StaffRecommendRequestDto recommendRequestDto) {
+        //call employee service to get relevant employees based on the filter criteria
+        List<EmployeeCandidateDto> filteredCandidates = RestClient
+                .create("http://localhost:8081")
+                .post()
+                .uri("/api/employees/candidates")
+                .body(recommendRequestDto.getFilterCriteria())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (request, resp) -> {
+                    throw new RuntimeException("Bad request to employee service: " + resp.getStatusCode());
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, resp) -> {
+                    throw new RuntimeException("Employee service error: " + resp.getStatusCode());
+                })
+                .body(new ParameterizedTypeReference<List<EmployeeCandidateDto>>() {
+                });
+        log.info("Filtered Candidates successfully fetched from employee service");
+
+        //get understaff departments
+        List<DepartmentInfoDto> underStaffDeptInfo = getOverUnderStaffedDepts(false).stream()
+                .map(dept -> new DepartmentInfoDto(
+                        dept.getDepartmentDto().getDepartmentCode(),
+                        dept.getDepartmentDto().getDepartmentName(),
+                        dept.getDepartmentDto().getCapacity(),
+                        dept.getActiveEmployeeCount().intValue()))
+                .toList();
+
+        log.info("successfully fetched understaff departments info");
+
+        AiStaffingRequestDto aiStaffingRequest =
+                new AiStaffingRequestDto(
+                        recommendRequestDto.getDepartmentInfoDto(),
+                        filteredCandidates,
+                        underStaffDeptInfo);
+
+        log.info("AiStaffingRequestDto request created successfully");
+
+        //call AI service to get recommendations
+        return RestClient
+                .create("http://localhost:8000")
+                .post()
+                .uri("staffing/recommendations")
+                .body(aiStaffingRequest)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (request, resp) -> {
+                    throw new RuntimeException("Bad request to AI service: " + resp.getStatusCode());
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, resp) -> {
+                    throw new RuntimeException("AI service error: " + resp.getStatusCode());
+                })
+                .body(AiStaffingResponseDto.class);
+
     }
 
     private List<StaffCount> getOverUnderStaffedDepts(boolean isOverStaffed) {

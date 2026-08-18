@@ -1,7 +1,6 @@
 package com.codewave.departmentservice.service;
 
-import com.codewave.departmentservice.dto.DepartmentDto;
-import com.codewave.departmentservice.dto.StaffCount;
+import com.codewave.departmentservice.dto.*;
 
 import java.util.List;
 
@@ -11,5 +10,5 @@ public interface DepartmentService {
     List<DepartmentDto> getAllDepartments();
     List<StaffCount> getOverStaffedDepartments();
     List<StaffCount> getUnderStaffedDepartments();
-
+    AiStaffingResponseDto getAiStaffRecommendations(StaffRecommendRequestDto filterCriteria);
 }

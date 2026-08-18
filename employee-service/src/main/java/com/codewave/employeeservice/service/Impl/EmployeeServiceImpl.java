@@ -86,8 +86,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> candidates = employeeRepository.findAll(spec);
         return candidates
                 .stream()
-                .map(dto -> new EmployeeCandidateDto(dto.getEmployeeId(), dto.getDesignation(), dto.getExperienceYears().doubleValue(), dto.getEmploymentStatus()))
-                .collect(Collectors.toList());
+                .map(dto -> new EmployeeCandidateDto(
+                        dto.getEmployeeId(),
+                        dto.getDesignation(),
+                        dto.getExperienceYears().doubleValue(),
+                        dto.getEmploymentStatus(),
+                        dto.getSkills()
+                        ))
+                .toList();
     }
 
     public APIResponseDto getDefaultDepartment(Long employeeId, Throwable throwable) {

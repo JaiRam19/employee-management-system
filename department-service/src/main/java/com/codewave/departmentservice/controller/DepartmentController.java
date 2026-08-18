@@ -1,7 +1,9 @@
 package com.codewave.departmentservice.controller;
 
+import com.codewave.departmentservice.dto.AiStaffingResponseDto;
 import com.codewave.departmentservice.dto.DepartmentDto;
 import com.codewave.departmentservice.dto.StaffCount;
+import com.codewave.departmentservice.dto.StaffRecommendRequestDto;
 import com.codewave.departmentservice.service.DepartmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,5 +48,11 @@ public class DepartmentController {
     public ResponseEntity<List<StaffCount>> getUnderStaffedDepartments() {
         List<StaffCount> underStaffedDepartments = departmentService.getUnderStaffedDepartments();
         return ResponseEntity.ok(underStaffedDepartments);
+    }
+
+    @PostMapping("/ai/staff-recommend")
+    public ResponseEntity<AiStaffingResponseDto> getAllAiStaffing(@RequestBody StaffRecommendRequestDto staffRecommendRequestDto) {
+        AiStaffingResponseDto aiStaffRecommendations = departmentService.getAiStaffRecommendations(staffRecommendRequestDto);
+        return ResponseEntity.ok(aiStaffRecommendations);
     }
 }

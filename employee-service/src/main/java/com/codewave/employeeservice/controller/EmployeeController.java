@@ -45,7 +45,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeCountMap);
     }
 
-    @PostMapping("/employees/candidates")
+    @PostMapping("/candidates")
     public ResponseEntity<List<EmployeeCandidateDto>> getMovementCandidates(@RequestBody EmployeeFilterCriteria criteria){
         List<EmployeeCandidateDto> movementCandidates = employeeService.getMovementCandidates(criteria);
         return ResponseEntity.ok(movementCandidates);
